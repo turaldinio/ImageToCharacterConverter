@@ -4,6 +4,7 @@ package ru.netology.graphics.image;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -23,6 +24,7 @@ public class Converter implements TextGraphicsConverter {
 
         BufferedImage img = ImageIO.read(new URL(url));
         if (ratioChanged) {
+            System.out.println(img.getWidth()+" "+img.getHeight());
             double maxRatio = img.getWidth() / img.getHeight();
             if (maxRatio > maxRatio) {
                 throw new BadImageSizeException(maxRatio, maxRatio);
@@ -40,8 +42,13 @@ public class Converter implements TextGraphicsConverter {
         }
 
 
-        Image scaledImage = img.getScaledInstance(newWidth, newHeight, BufferedImage.SCALE_SMOOTH);
+        Image scaledImage = img.getScaledInstance(newWidth, newHeight, BufferedImage.SCALE_SMOOTH); //Новая суженная картинка
 
+        BufferedImage bwImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_GRAY);//чернобелая копия
+        Graphics2D graphics = bwImg.createGraphics();
+
+        graphics.drawImage(scaledImage, 0, 0, null);
+        ImageIO.write(bwImg, "png", new File("C:\\Users\\Admin\\Desktop\\myFile.png"));
 
         return "turaldinio";
 
