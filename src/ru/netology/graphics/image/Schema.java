@@ -6,11 +6,11 @@ public class Schema implements TextColorSchema {
             '#', '$', '@', '%', '*', '+', '-', '\''
     };
 
+    private int colorBorder = 36;//255/7
+
     @Override
     public char convert(int color) {
-        double colorBorder = 255.0 / symbol.length;
-        return symbol[(int) (color / colorBorder)];
 
-
+        return symbol[ (color / colorBorder)];
     }
 }
