@@ -14,7 +14,9 @@ public class Converter implements TextGraphicsConverter {
     private int height;
     private double maxRatio;
     private boolean ratioChanged = false;
-    private boolean sizeChanged = false;
+    private boolean heightChanged = false;
+    private boolean widthChanged = false;
+
 
     private TextColorSchema textColorSchema;
 
@@ -23,22 +25,30 @@ public class Converter implements TextGraphicsConverter {
     public String convert(String url) throws IOException, BadImageSizeException {
 
         BufferedImage img = ImageIO.read(new URL(url));
+
         if (ratioChanged) {
-            System.out.println(img.getWidth()+" "+img.getHeight());
-            double maxRatio = img.getWidth() / img.getHeight();
-            if (maxRatio > maxRatio) {
+            int currentRatio = img.getWidth() / img.getHeight();
+            if (currentRatio > maxRatio) {
                 throw new BadImageSizeException(maxRatio, maxRatio);
             }
-
         }
 
         int newWidth = img.getWidth();
         int newHeight = img.getHeight();
 
-        if (sizeChanged) {
-            double sizeDifference = img.getWidth() / width;
-            newWidth = (int) (img.getWidth() / sizeDifference);
-            newHeight = (int) (img.getHeight() / sizeDifference);
+
+        double widthDifference = (double) img.getWidth() / width;
+
+        if (widthChanged && heightChanged) {
+            newWidth = (int) (img.getWidth() / widthDifference);
+            newHeight = (int) (img.getHeight() / widthDifference);
+        } else {
+            if (widthChanged) {
+                newWidth = (int) (img.getWidth() / widthDifference);
+            } else {
+                newHeight = (int) (img.getHeight() / widthDifference);
+
+            }
         }
 
 
@@ -56,13 +66,13 @@ public class Converter implements TextGraphicsConverter {
 
     @Override
     public void setMaxWidth(int width) {
-        sizeChanged = true;
+        widthChanged = true;
         this.width = width;
     }
 
     @Override
     public void setMaxHeight(int height) {
-        sizeChanged = true;
+        heightChanged = true;
         this.height = height;
     }
 

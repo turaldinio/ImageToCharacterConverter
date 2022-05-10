@@ -10,8 +10,9 @@ import java.io.PrintWriter;
 public class Main {
     public static void main(String[] args) throws Exception {
         TextGraphicsConverter converter = new Converter(); // Создайте тут объект вашего класса конвертера
-        converter.setMaxRatio(2);
-        converter.convert("https://lemurrr.ru/medias/sys_master/images/h67/h71/8905511436318.jpg");
+        converter.setMaxWidth(100);
+        converter.setMaxHeight(100);
+        converter.convert("https://pngimg.com/uploads/ibm/ibm_PNG19656.png");
         //      GServer server = new GServer(converter); // Создаём объект сервера
         //     server.start(); // Запускаем
 
