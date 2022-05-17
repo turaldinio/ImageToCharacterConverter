@@ -10,7 +10,6 @@ public class Schema implements TextColorSchema {
 
     @Override
     public char convert(int color) {
-
-        return symbol[ (color / colorBorder)];
+        return symbol[(color / colorBorder)];
     }
 }

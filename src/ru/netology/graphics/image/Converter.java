@@ -24,13 +24,16 @@ public class Converter implements TextGraphicsConverter {
     @Override
     public String convert(String url) throws IOException, BadImageSizeException {
 
+
         BufferedImage img = ImageIO.read(new URL(url));
 
         if (ratioChanged) {
             int currentRatio = img.getWidth() / img.getHeight();
+
             if (currentRatio > maxRatio) {
-                throw new BadImageSizeException(maxRatio, maxRatio);
+                throw new BadImageSizeException(maxRatio, currentRatio);
             }
+
         }
 
         int newWidth = img.getWidth();
@@ -40,8 +43,8 @@ public class Converter implements TextGraphicsConverter {
         if (widthChanged && heightChanged) {
             double widthDifference = (double) img.getWidth() / width;
 
-            newWidth = (int) (img.getWidth() / widthDifference);
-            newHeight = (int) (img.getHeight() / widthDifference);
+            newWidth = (int) ((double) img.getWidth() / widthDifference);
+            newHeight = (int) ((double) img.getHeight() / widthDifference);
         } else {
             if (widthChanged) {
                 double widthDifference = (double) img.getWidth() / width;
@@ -49,21 +52,24 @@ public class Converter implements TextGraphicsConverter {
                 newWidth = (int) (img.getWidth() / widthDifference);
             } else {
                 if (heightChanged) {
-                    double widthDifference = (double) img.getWidth() / width;
+                    double widthDifference = (double) img.getHeight() / height;
 
                     newHeight = (int) (img.getHeight() / widthDifference);
                 }
             }
         }
 
-
         Image scaledImage = img.getScaledInstance(newWidth, newHeight, BufferedImage.SCALE_SMOOTH); //Новая суженная картинка
 
+
         BufferedImage bwImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_GRAY);//чернобелая копия
+
+        //       ImageIO.write(bwImg, "png", new File("C:\\Users\\Admin\\Desktop\\myFile.png"));
+
+
         Graphics2D graphics = bwImg.createGraphics();
 
-        graphics.drawImage(scaledImage, 0, 0, null);
-        //       ImageIO.write(bwImg, "png", new File("C:\\Users\\Admin\\Desktop\\myFile.png"));
+        graphics.drawImage(scaledImage, 0, 0, null);// рисует черно белую картинку в новый размер
 
         WritableRaster bwRaster = bwImg.getRaster();
 
@@ -74,18 +80,20 @@ public class Converter implements TextGraphicsConverter {
 
         int rpgArray[] = new int[3];
 
-        StringBuilder result = new StringBuilder();
 
-        for (int w = 0; w < bwRaster.getWidth(); w++) {
-            for (int h = 0; h < bwRaster.getHeight(); h++) {
-                int color = bwRaster.getPixel(w, h, rpgArray)[0];
+
+        StringBuilder result = new StringBuilder();
+        for (int w = 0; w < bwRaster.getHeight(); w++) {
+            for (int h = 0; h < bwRaster.getWidth(); h++) {
+                int color = bwRaster.getPixel(h, w, rpgArray)[0];
                 char c = schema.convert(color);
                 result.append(c).append(c);
             }
             result.append("\n");
+
         }
 
-        return result.reverse().toString();
+        return result.toString();
 
     }
 
@@ -111,6 +119,6 @@ public class Converter implements TextGraphicsConverter {
     @Override
     public void setTextColorSchema(TextColorSchema schema) {
         setTextColor = true;
-        this.schema=schema;
+        this.schema = schema;
     }
 }
